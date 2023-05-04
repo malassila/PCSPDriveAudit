@@ -2,6 +2,10 @@ version = "v1.0.0"
 
 THEME = "dark"
 
+num_connected = 0
+connected_drives = []
+connected_treeview = None
+
 mysql_host = '192.168.1.156'
 mysql_database = 'drive-project'
 
@@ -46,31 +50,49 @@ def get_headers(access_token):
 def get_hex_color(color_name):
     return colors.get(color_name.lower())
 
+def get_port_name(slot_name):
+    return port_dictionary.get(slot_name)
+
+def set_row_status(treeview, item, status):
+    # Set the tag for the row depending on the status
+    tag = ""
+    if status == "Connected" or status == "Disconnected":
+        tag = "connected"
+    elif status == "Wiping":
+        tag = "wiping"
+    elif status == "Wiped":
+        tag = "wiped"
+    elif status == "Wipe Failed":
+        tag = "wipe_failed"
+    treeview.item(item, tags=(tag,))
+    
+
+
 port_dictionary = {
-    "Slot 01": "A6",
-    "Slot 02": "A5",
-    "Slot 03": "A4",
-    "Slot 04": "A3",
-    "Slot 05": "A2",
-    "Slot 06": "A1",
-    "Slot 07": "B6",
-    "Slot 08": "B5",
-    "Slot 09": "B4",
-    "Slot 10": "B3",
-    "Slot 11": "B2",
-    "Slot 12": "B1",
-    "Slot 13": "C6",
-    "Slot 14": "C5",
-    "Slot 15": "C4",
-    "Slot 16": "C3",
-    "Slot 17": "C2",
-    "Slot 18": "C1",
-    "Slot 19": "D6",
-    "Slot 20": "D5",
-    "Slot 21": "D4",
-    "Slot 22": "D3",
-    "Slot 23": "D2",
-    "Slot 24": "D1"
+    "01": "A6",
+    "02": "A5",
+    "03": "A4",
+    "04": "A3",
+    "05": "A2",
+    "06": "A1",
+    "07": "B6",
+    "08": "B5",
+    "09": "B4",
+    "10": "B3",
+    "11": "B2",
+    "12": "B1",
+    "13": "C6",
+    "14": "C5",
+    "15": "C4",
+    "16": "C3",
+    "17": "C2",
+    "18": "C1",
+    "19": "D6",
+    "20": "D5",
+    "21": "D4",
+    "22": "D3",
+    "23": "D2",
+    "24": "D1"
 }
 
 colors = {
